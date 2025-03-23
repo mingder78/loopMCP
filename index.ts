@@ -1,6 +1,8 @@
 import * as readline from 'readline';
 import { v4 as uuidv4 } from 'uuid'; // For generating a unique session ID
 
+const UUID='7c261c94-d842-4e79-a47b-8a30080366f3'
+
 // Create a readline interface for CLI input/output
 const rl = readline.createInterface({
   input: process.stdin,
@@ -10,7 +12,7 @@ const rl = readline.createInterface({
 // MCP server endpoint (replace with your actual MCP server URL)
 
 // Generate a unique session ID for this CLI session
-const sessionId = '0b7461ab-65d7-41c8-8e0f-795082ad63b6'//uuidv4();
+const sessionId = UUID //uuidv4();
 console.log(`Using sessionId: ${sessionId}`);
 const params = new URLSearchParams({
   sessionId
@@ -36,15 +38,22 @@ async function connectToMCP(): Promise<string> {
     return 'Error: Could not get a response';
   }
 }
+var id = 1
+
 
 // Simple function to send a message to the MCP server and get a response
 async function sendToMCP(message: string): Promise<string> {
-
+let requestBody = {
+    jsonrpc: "2.0",
+    method: "ping",
+    id: id++,
+  };
+console.log(JSON.stringify(requestBody))
   try {
     const response = await fetch(MCP_SERVER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: message // MCP expects a message payload
+      body: JSON.stringify(requestBody)  // MCP expects a message payload
     });
 
   console.log(response)
